@@ -8,6 +8,6 @@ export const connectDB = () => {
       console.log("Database connected");
     })
     .catch((err) => {
-      console.log(err);
+      console.log("Error",err);
     });
 };
