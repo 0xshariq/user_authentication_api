@@ -3,7 +3,7 @@ import ErrorHandler from "../middleware/error.js"
 
 export const validateApiKey = async (req, res, next) => {
   try {
-    const { apiKey } = req.query
+    const { apiKey } = req.body
 
     if (!apiKey) {
       return next(new ErrorHandler(400, "API key is required"))
