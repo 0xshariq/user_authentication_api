@@ -101,6 +101,7 @@ export const logout = async (req, res, next) => {
   }
 }
 
-export const getAllUsers = (res,req) => {
-
+export const getAllUsers = async (res,req) => {
+  const user = await User.find()
+  res.status(200).json(user)
 }
