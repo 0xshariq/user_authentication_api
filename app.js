@@ -20,7 +20,8 @@ app.use(cors({
         process.env.FRONTEND_URL_1,
         process.env.FRONTEND_URL_2,
         "http://localhost:5000",
-        "http://localhost:8000"
+        "http://localhost:8000",
+        "https://user-authentication-api-jqfm.onrender.com"
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
