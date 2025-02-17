@@ -1,3 +1,6 @@
+import nodemailer from "nodemailer";
+import User from "../models/user.js"; 
+
 export const sendApiKeyEmail = async (userId, apiKey) => {
   try {
     const user = await User.findById(userId);
@@ -5,9 +8,13 @@ export const sendApiKeyEmail = async (userId, apiKey) => {
       throw new Error("User email not found");
     }
 
+    if (!process.env.EMAIL_HOST || !process.env.EMAIL_PORT || !process.env.EMAIL_USER || !process.env.EMAIL_PASS || !process.env.EMAIL_FROM) {
+      throw new Error("Missing required email environment variables");
+    }
+
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
+      port: Number(process.env.EMAIL_PORT), 
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -62,9 +69,9 @@ The API Team
     };
 
     await transporter.sendMail(mailOptions);
-    console.log("API key email sent successfully");
+    console.log("API key email sent successfully to:", user.email);
   } catch (error) {
-    console.error("Error sending API key email:", error);
+    console.error("Error sending API key email:", error.message);
     throw error;
   }
 };
