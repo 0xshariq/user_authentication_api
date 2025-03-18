@@ -14,7 +14,8 @@ export const sendApiKeyEmail = async (userId, apiKey) => {
 
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT), 
+      port: Number(process.env.EMAIL_PORT),
+      secure: process.env.EMAIL_PORT === "465", // Use secure if port is 465
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -22,56 +23,64 @@ export const sendApiKeyEmail = async (userId, apiKey) => {
     });
 
     const mailOptions = {
-      from: process.env.EMAIL_FROM,
+      from: `"API Support Team" <${process.env.EMAIL_FROM}>`,
       to: user.email,
-      subject: "Your API Key for Our Services",
+      subject: "🔑 Your API Key is Ready!",
       text: `
 Hello ${user.name},
 
-Thank you for registering with our platform. Your API key has been successfully generated and is ready for use.
+Welcome to our platform! Your API key has been successfully generated and is now ready for use.
 
-Your API Key: ${apiKey}
+🔹 Your API Key: ${apiKey}
 
-Important Notes:
-1. Keep this key secure and do not share it with anyone.
-2. Use this key to authenticate your requests to any of our APIs.
-3. If you believe your key has been compromised, please contact our support team immediately to regenerate it.
-4. This key grants access to all our APIs. Refer to our documentation for specific endpoints and usage guidelines.
+🚀 **How to Use Your API Key**
+- This key is your unique identifier for accessing our APIs.
+- Keep it secure and do NOT share it with anyone.
+- Use this key in the "Authorization" header when making API requests.
 
-For detailed documentation on how to use our APIs, please visit our developer portal: [https://api-docs-gilt.vercel.app/].
+🔒 **Security Tips**
+- Store this key securely and avoid sharing it.
+- If you suspect any unauthorized usage, regenerate your key immediately from your dashboard.
+- Check our API documentation for best practices: https://api-docs-gilt.vercel.app/
 
-If you have any questions or need assistance, feel free to reach out to our support team at [Insert Support Email].
+Need help? Reach out to our support team at [Insert Support Email].
 
-Best regards,
+Best regards,  
 The API Team
       `,
       html: `
-<h2>Hello ${user.name},</h2>
+      <div style="font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; color: #333;">
+        <h2 style="color: #007bff;">Hello ${user.name},</h2>
+        <p>Welcome to our platform! Your API key has been successfully generated and is now ready for use.</p>
+        
+        <h3 style="color: #28a745;">🔑 Your API Key:</h3>
+        <pre style="background-color: #f4f4f4; padding: 10px; border-radius: 5px; font-size: 16px;">${apiKey}</pre>
 
-<p>Thank you for registering with our platform. Your API key has been successfully generated and is ready for use.</p>
+        <h3>🚀 How to Use Your API Key</h3>
+        <ul>
+          <li>This key is your unique identifier for accessing our APIs.</li>
+          <li>Keep it secure and do <strong>NOT</strong> share it with anyone.</li>
+          <li>Use this key in the <code>Authorization</code> header when making API requests.</li>
+        </ul>
 
-<p><strong>Your API Key:</strong> <code>${apiKey}</code></p>
+        <h3 style="color: #dc3545;">🔒 Security Tips</h3>
+        <ul>
+          <li>Store this key securely and avoid sharing it.</li>
+          <li>If you suspect any unauthorized usage, regenerate your key immediately from your dashboard.</li>
+          <li>Check our <a href="https://api-docs-gilt.vercel.app/" target="_blank">API documentation</a> for best practices.</li>
+        </ul>
 
-<h3>Important Notes:</h3>
-<ol>
-  <li>Keep this key secure and do not share it with anyone.</li>
-  <li>Use this key to authenticate your requests to any of our APIs.</li>
-  <li>If you believe your key has been compromised, please contact our support team immediately to regenerate it.</li>
-  <li>This key grants access to all our APIs. Refer to our documentation for specific endpoints and usage guidelines.</li>
-</ol>
+        <p>If you need any assistance, reach out to our support team at <a href="mailto:[Insert Support Email]">[Insert Support Email]</a>.</p>
 
-<p>For detailed documentation on how to use our APIs, please visit our <a href="#">developer portal</a>.</p>
-
-<p>If you have any questions or need assistance, feel free to reach out to our support team at <a href="mailto:[Insert Support Email]">[Insert Support Email]</a>.</p>
-
-<p>Best regards,<br>The API Team</p>
+        <p>Best regards,<br><strong>The API Team</strong></p>
+      </div>
       `,
     };
 
     await transporter.sendMail(mailOptions);
-    console.log("API key email sent successfully to:", user.email);
+    console.log("✅ API key email sent successfully to:", user.email);
   } catch (error) {
-    console.error("Error sending API key email:", error.message);
+    console.error("❌ Error sending API key email:", error.message);
     throw error;
   }
 };
