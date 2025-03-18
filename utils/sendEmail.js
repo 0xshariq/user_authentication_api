@@ -38,7 +38,7 @@ Important Notes:
 3. If you believe your key has been compromised, please contact our support team immediately to regenerate it.
 4. This key grants access to all our APIs. Refer to our documentation for specific endpoints and usage guidelines.
 
-For detailed documentation on how to use our APIs, please visit our developer portal: [Insert Developer Portal Link].
+For detailed documentation on how to use our APIs, please visit our developer portal: [https://api-docs-gilt.vercel.app/].
 
 If you have any questions or need assistance, feel free to reach out to our support team at [Insert Support Email].
 
