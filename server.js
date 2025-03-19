@@ -10,7 +10,6 @@ import compression from "compression"; // Enables gzip compression for improved 
 import morgan from "morgan"; // Logs HTTP requests for debugging and monitoring
 import createDOMPurify from "dompurify"; // Sanitizes user inputs to prevent XSS attacks
 import { JSDOM } from "jsdom"; // Provides a virtual DOM for DOMPurify to work
-import { createClient } from "redis"; // Redis client for caching and rate limiting
 import { connectDB } from "./db/database.js"; // Connects to MongoDB database
 import userRouter from "./routes/user.js"; // User-related API routes
 import apiKeyRouter from "./routes/apiKey.js"; // API Key management routes
@@ -23,10 +22,6 @@ connectDB();
 
 // Initialize Express application
 const app = express();
-
-// Initialize Redis client for caching and rate limiting
-const redisClient = createClient();
-redisClient.connect().catch(console.error);
 
 // Setup DOMPurify for input sanitization (prevents XSS attacks)
 const window = new JSDOM("").window;
@@ -90,7 +85,6 @@ app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
 });
 
-// Graceful Shutdown - Closes Redis connection when server stops
 process.on("SIGINT", async () => {
   console.log("Shutting down gracefully...");
   await redisClient.quit(); // Close Redis connection

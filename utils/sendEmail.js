@@ -36,7 +36,7 @@ Welcome to our platform! Your API key has been successfully generated and is now
 🚀 **How to Use Your API Key**
 - This key is your unique identifier for accessing our APIs.
 - Keep it secure and do NOT share it with anyone.
-- Use this key in the "Authorization" header when making API requests.
+- Use this key in the "X-Api-Key" header when making API requests.
 
 🔒 **Security Tips**
 - Store this key securely and avoid sharing it.
@@ -70,7 +70,7 @@ The API Team
           <li>Check our <a href="https://api-docs-gilt.vercel.app/" target="_blank">API documentation</a> for best practices.</li>
         </ul>
 
-        <p>If you need any assistance, reach out to our support team at <a href="mailto:[Insert Support Email]">[Insert Support Email]</a>.</p>
+        <p>If you need any assistance, reach out to our support team at <a href="mailto:khanshariq92213@gmail.com">khanshariq92213@gmail.com</a>.</p>
 
         <p>Best regards,<br><strong>The API Team</strong></p>
       </div>
