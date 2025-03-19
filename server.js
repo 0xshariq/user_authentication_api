@@ -87,6 +87,5 @@ app.listen(PORT, () => {
 
 process.on("SIGINT", async () => {
   console.log("Shutting down gracefully...");
-  await redisClient.quit(); // Close Redis connection
   process.exit(0);
 });
