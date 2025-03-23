@@ -14,6 +14,8 @@ import { connectDB } from "./db/database.js"; // Connects to MongoDB database
 import userRouter from "./routes/user.js"; // User-related API routes
 import apiKeyRouter from "./routes/apiKey.js"; // API Key management routes
 import validateApiKeyMiddleware from "./middleware/apiKeyMiddleware.js";
+import fs from "fs";
+import path from "path";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -29,6 +31,24 @@ const window = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 const sanitizeInput = (input) => DOMPurify.sanitize(input);
 
+// Ensure the logs directory exists
+const logsDir = path.join(process.cwd(), "logs");
+if (!fs.existsSync(logsDir)) {
+  fs.mkdirSync(logsDir, { recursive: true }); // Create logs directory if it doesn't exist
+}
+
+// Configure logging
+const logFilePath = path.join(logsDir, "access.log");
+const logStream = fs.createWriteStream(logFilePath, { flags: "a" });
+
+const env = process.env.NODE_ENV || "development";
+
+if (env === "production") {
+  app.use(morgan("combined", { stream: logStream })); // Log to file in production
+} else {
+  app.use(morgan("dev")); // Log to console in development
+}
+
 // Middleware setup
 app.use(express.json()); // Parses JSON payloads from requests
 app.use(express.urlencoded({ extended: true })); // Parses URL-encoded data
@@ -36,8 +56,6 @@ app.use(cookieParser()); // Enables cookie handling
 app.use(helmet()); // Protects API by setting various HTTP security headers
 app.use(mongoSanitize()); // Sanitizes incoming requests to prevent NoSQL injection
 app.use(compression()); // Compresses response bodies for better performance
-app.use(morgan("dev")); // Logs incoming requests (useful for debugging)
-
 // CORS Configuration - Allows requests from specific front-end origins
 app.use(
   cors({
@@ -80,13 +98,33 @@ app.use((req, res, next) => {
 app.use("/api/v2/users", userRouter); // User management routes
 app.use("/api/v2/apiKey",validateApiKeyMiddleware, apiKeyRouter); // API key management routes
 
-// Start the Express server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-});
+// Connect to database and start server
+const startServer = async () => {
+  try {
+    await connectDB()
 
+    const PORT = process.env.PORT || 3000
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT} in ${process.env.NODE_ENV} mode`)
+    })
+
+  } catch (error) {
+    console.error("Failed to start server:", error)
+    // Implement appropriate error handling here
+    // You might want to retry the connection or exit the process
+    process.exit(1)
+  }
+}
+
+startServer()
+
+// Handle graceful shutdown
 process.on("SIGINT", async () => {
-  console.log("Shutting down gracefully...");
-  process.exit(0);
-});
+  try {
+    console.log("Shutting down gracefully...")
+    process.exit(0)
+  } catch (error) {
+    console.error("Error during shutdown:", error)
+    process.exit(1)
+  }
+})
