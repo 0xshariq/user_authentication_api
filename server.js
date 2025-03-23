@@ -13,6 +13,7 @@ import { JSDOM } from "jsdom"; // Provides a virtual DOM for DOMPurify to work
 import { connectDB } from "./db/database.js"; // Connects to MongoDB database
 import userRouter from "./routes/user.js"; // User-related API routes
 import apiKeyRouter from "./routes/apiKey.js"; // API Key management routes
+import validateApiKeyMiddleware from "./middleware/apiKeyMiddleware.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -77,7 +78,7 @@ app.use((req, res, next) => {
 
 // Define API Routes
 app.use("/api/v2/users", userRouter); // User management routes
-app.use("/api/v2/apiKey", apiKeyRouter); // API key management routes
+app.use("/api/v2/apiKey",validateApiKeyMiddleware, apiKeyRouter); // API key management routes
 
 // Start the Express server
 const PORT = process.env.PORT || 3000;
