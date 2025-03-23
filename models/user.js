@@ -8,7 +8,7 @@ const userValidationSchema = z.object({
   password: z.string().min(6).regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm), // Ensures password is at least 6 characters
   apiKey: z
     .object({
-      key: z.string().optional(), // Optional API key
+      key: z.string(), 
       requestCount: z.number().default(0), // Defaults to 0
       requestLimit: z.number().default(1000), // Default limit
       active: z.boolean().default(true), // API key status
